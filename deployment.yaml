@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: nextjs
-          image: ghcr.io/AdityaPatadiya/nextjs-app-deployment/nextjs-k8s-demo:latest
+          image: ghcr.io/adityapatadiya/nextjs-app-deployment/nextjs-k8s-demo:latest
           ports:
             - containerPort: 3000
           livenessProbe:
