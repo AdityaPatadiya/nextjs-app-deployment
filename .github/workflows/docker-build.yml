@@ -1,0 +1,40 @@
+name: Build and Push Docker Image to GHCR
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+
+        permissions:
+            contents: read
+            packages: write
+        
+        steps:
+            # 1. checkout code
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            # 2. Log in to GHCR
+            - name: Log in to GHCR
+              uses: docker/login-action@v3
+              with: 
+                registry: ghcr.io
+                username: ${{ github.actor }}
+                password: ${{ secrets.GITHUB_TOKEN }}
+            
+            # 3. Build Docker image with caching
+            - name: Build Docker image
+              run: |
+                IMAGE_NAME=ghcr.io/${{ github.repository }}/nextjs-k8s-demo
+                docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:${{ github.sha }}.
+            
+            # 4. Push Docker image to GHCR
+            - name: Push Docker image
+              run: |
+                IMAGE_NAME=ghcr.io/${{ github.repository }}/nextjs-k9s-demo
+                docker push $ IMAGE_NAME:latest
+                docker push $IMAGE_NAME:${{ github.sha }}
