@@ -1,36 +1,111 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🚀 Next.js Application Deployment using Docker, GitHub Actions, and Minikube
 
-## Getting Started
+This project demonstrates the complete DevOps workflow of **containerizing**, **automating**, and **deploying** a Next.js application using **Docker**, **GitHub Actions**, **GitHub Container Registry (GHCR)**, and **Kubernetes (Minikube)**.
 
-First, run the development server:
+---
+
+## 📋 Objectives
+
+- Containerize a Next.js application using Docker
+- Automate build and image push using GitHub Actions and GHCR
+- Deploy the containerized app to Minikube using Kubernetes manifests
+- Implement best practices for CI/CD, scalability, and health monitoring
+
+---
+
+## 🏗️ Project Architecture
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+flowchart LR
+    A[Next.js App] --> B[Dockerfile]
+    B --> C[GitHub Actions]
+    C --> D[GHCR - GitHub Container Registry]
+    D --> E[Kubernetes (Minikube)]
+    E --> F[User Access via NodePort Service]
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Tech Stack
+- Next.js
+- Docker
+- GitHub Actions (CI/CD)
+- GitHub Container Registry (GHDR)
+- Kubernetes (Minikube)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Setup Instruction
+1. Clone the Repo:
+```bash
+git clone https://github.com/AdityaPatadiya/nextjs-app-deployment.git
+cd nextjs-app-deployment
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+2. Run Locally (Optional)
+```bash
+npm install
+npm run dev
+```
 
-## Learn More
+## Docker Setup
+### Build the Docker Image
+```bash
+docker build -t nextjs-k8s-demo .
+```
 
-To learn more about Next.js, take a look at the following resources:
+### Run the Container Locally
+```bash
+docker run -p 3000:3000 nextjs-k8s-demo
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Access it at: http://localhost:3000
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Github Actions Workflow
+- The workflow is located at `.github/workflows/docker-image.yml`
+- It automatically:
+  
+  1. Builds the Docker image on every push to the main branch
+  2. Tags and pushes it to GHCR
+  3. Uses the image in Kubernetes deployment
 
-## Deploy on Vercel
+## Github Container Registry (GHCR)
+Image URL:
+[nextjs-k8s-demo](https://ghcr.io/AdityaPatadiya/nextjs-k8s-demo)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Kubernetes Deployment
+- `deployment.yaml` — defines pods, replicas, and health checks
+- `service.yaml` — exposes the app via NodePort
+
+### 1. Start Minikube
+```bash
+minikube start
+```
+
+### 2. Apply Manigests
+```bash
+kubectl apply -f deployment.yaml
+kubectl apply -f service.yaml
+```
+
+### 3. Verify Pods and Services
+```bash
+kubectl get pods
+kubectl get svc
+```
+
+### 4. Access the Application
+```bash
+minikube service nextjs-service
+```
+
+or manually open:
+http://<MINIKUBE_IP>:<NODE_PORT>
+Example:
+```bash
+http://192.168.49.2:30001
+```
+
+## Health Check
+The container includes a health check to ensure the application is running properly:
+```bash
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s \
+    CMD wget -qO- http://localhost:3000/ || exit 1
+```
