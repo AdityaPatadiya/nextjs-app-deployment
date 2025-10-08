@@ -29,12 +29,12 @@ jobs:
             # 3. Build Docker image with caching
             - name: Build Docker image
               run: |
-                IMAGE_NAME=ghcr.io/adityapatadiya/nextjs-k8s-demo:latest
+                IMAGE_NAME=ghcr.io/adityapatadiya/nextjs-k8s-demo
                 docker build -t $IMAGE_NAME:latest -t $IMAGE_NAME:${{ github.sha }} .
             
             # 4. Push Docker image to GHCR
             - name: Push Docker image
               run: |
-                IMAGE_NAME=ghcr.io/adityapatadiya/nextjs-k8s-demo:latest
+                IMAGE_NAME=ghcr.io/adityapatadiya/nextjs-k8s-demo
                 docker push $IMAGE_NAME:latest
                 docker push $IMAGE_NAME:${{ github.sha }}
