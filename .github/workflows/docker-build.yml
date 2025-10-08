@@ -36,5 +36,5 @@ jobs:
             - name: Push Docker image
               run: |
                 IMAGE_NAME=ghcr.io/adityapatadiya/nextjs-app-deployment/nextjs-k8s-demo
-                docker push $ IMAGE_NAME:latest
+                docker push $IMAGE_NAME:latest
                 docker push $IMAGE_NAME:${{ github.sha }}
